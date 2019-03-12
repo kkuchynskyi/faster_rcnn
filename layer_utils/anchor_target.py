@@ -14,7 +14,7 @@ def anchor_target(gt_boxes,anchors,image_width,image_height):
       indices_of_true_bboxes: a tensor with shape[num_positive_labels,1], contains indices of anchors where max_overlaps 
             with gt_boxes >= 0.5    
     """
-    total_anchors = anchors.shape[0]
+    total_anchors = anchors.get_shape()[0]
 
     indices = tf.where((anchors[:, 0] >= 0) & (anchors[:, 1] >= 0) & (
         anchors[:, 2] < image_width) & (anchors[:, 3] < image_height))
@@ -34,6 +34,7 @@ def anchor_target(gt_boxes,anchors,image_width,image_height):
     bboxes = tf.cond(
         tf.equal(tf.shape(bboxes)[1], 2), lambda: bboxes,
         lambda: tf.squeeze(bboxes,axis=1))
+    
     labels = tf.scatter_update(tf.Variable(tf.ones(
         (total_anchors))*-1, dtype=tf.float32), indices, tf.cast(labels, tf.float32))
     indices_of_true_bboxes = get_indices_for_1(labels)

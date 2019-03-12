@@ -14,8 +14,8 @@ def roi_pool_layer(net,rois):
         fc: a tensor with shape [num_rois,7,7,1024]    
     """
     net_shape = tf.shape(net)
-    height = (tf.to_float(net_shape[0]) - 1.) * 16.
-    width = (tf.to_float(net_shape[1]) - 1.) * 16.
+    height = tf.to_float(net_shape[0]) * 16.
+    width = tf.to_float(net_shape[1]) * 16.
     batch_ids = tf.squeeze(tf.slice(rois, [0, 0], [-1, 1], name="batch_id"), [1])
     x1 = tf.slice(rois, [0, 1], [-1, 1], name="x1") / width
     y1 = tf.slice(rois, [0, 2], [-1, 1], name="y1") / height

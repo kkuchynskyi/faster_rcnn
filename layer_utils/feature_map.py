@@ -17,6 +17,7 @@ def get_feature_map(img):
     net = slim.separable_conv2d(net,None, 3,
                                     stride=1,
                                     rate=1,
+                                    depth_multiplier=1,
                                     scope='Conv2d_1_depthwise')
     net = slim.conv2d(net, 64, [1,1],
                           stride=1,
@@ -25,6 +26,7 @@ def get_feature_map(img):
     net = slim.separable_conv2d(net,None, 3,
                                     stride=2,
                                     rate=1,
+                                    depth_multiplier=1,
                                     scope='Conv2d_2_depthwise')
     net = slim.conv2d(net, 128,[1,1],
                           stride=1,
@@ -32,6 +34,7 @@ def get_feature_map(img):
     net = slim.separable_conv2d(net,None, 3,
                                     stride=1,
                                     rate=1,
+                                    depth_multiplier=1,
                                     scope='Conv2d_3_depthwise')
     net = slim.conv2d(net, 128,[1,1],
                           stride=1,
@@ -39,6 +42,7 @@ def get_feature_map(img):
     net = slim.separable_conv2d(net,None,3,
                                     stride=2,
                                     rate=1,
+                                    depth_multiplier=1,
                                     scope='Conv2d_4_depthwise')
     net = slim.conv2d(net, 256, [1,1],
                           stride=1,
@@ -47,6 +51,7 @@ def get_feature_map(img):
     net = slim.separable_conv2d(net,None, 3,
                                     stride=1,
                                     rate=1,
+                                    depth_multiplier=1,
                                     scope='Conv2d_5_depthwise')
     net = slim.conv2d(net, 256, [1,1],
                           stride=1,
@@ -54,6 +59,7 @@ def get_feature_map(img):
     net = slim.separable_conv2d(net,None,3,
                                     stride=2,
                                     rate=1,
+                                    depth_multiplier=1,
                                     scope='Conv2d_6_depthwise')
     net = slim.conv2d(net, 512, [1,1],
                           stride=1,
@@ -63,6 +69,7 @@ def get_feature_map(img):
     net = slim.separable_conv2d(net,None,3,
                                     stride=1,
                                     rate=1,
+                                    depth_multiplier=1,
                                     scope='Conv2d_7_depthwise')
     net = slim.conv2d(net, 512, [1, 1],
                           stride=1,
@@ -70,6 +77,7 @@ def get_feature_map(img):
     net = slim.separable_conv2d(net,None, 3,
                                     stride=1,
                                     rate=1,
+                                    depth_multiplier=1,
                                     scope='Conv2d_8_depthwise')
     net = slim.conv2d(net, 512, [1, 1],
                           stride=1,
@@ -77,6 +85,7 @@ def get_feature_map(img):
     net = slim.separable_conv2d(net,None, 3,
                                     stride=1,
                                     rate=1,
+                                    depth_multiplier=1,
                                     scope='Conv2d_9_depthwise')
     net = slim.conv2d(net, 512, [1, 1],
                           stride=1,
@@ -84,6 +93,7 @@ def get_feature_map(img):
     net = slim.separable_conv2d(net,None, 3,
                                     stride=1,
                                     rate=1,
+                                    depth_multiplier=1,
                                     scope='Conv2d_10_depthwise')
     net = slim.conv2d(net, 512, [1, 1],
                           stride=1,
@@ -91,6 +101,7 @@ def get_feature_map(img):
     net = slim.separable_conv2d(net,None, 3,
                                     stride=1,
                                     rate=1,
+                                    depth_multiplier=1,
                                     scope='Conv2d_11_depthwise')
     net = slim.conv2d(net, 512, [1, 1],
                           stride=1,
@@ -99,6 +110,7 @@ def get_feature_map(img):
     net = slim.separable_conv2d(net,None, 3,
                                     stride=1,  # 1
                                     rate=1,
+                                    depth_multiplier=1,
                                     scope='Conv2d_12_depthwise')
     net = slim.conv2d(net, 1024, [1, 1],
                           stride=1,
@@ -106,6 +118,7 @@ def get_feature_map(img):
     net = slim.separable_conv2d(net,None, 3,
                                     stride=1,
                                     rate=1,
+                                    depth_multiplier=1,
                                     scope='Conv2d_13_depthwise')
     net = slim.conv2d(net, 1024, [1, 1],
                           stride=1,
@@ -121,6 +134,7 @@ def initialize_feature_extractor_weights(path_to_dict):
     var_arr_map = np.load(path_to_dict).item()
     # CON2d_0
     conv2d_0 = var_arr_map['FeatureExtractor/MobilenetV1/Conv2d_0/weights:0']
+    new_arr = np.mean(conv2d_0, axis=2, keepdims=True)
     conv2d_0_bn_gamma = var_arr_map['FeatureExtractor/MobilenetV1/Conv2d_0/BatchNorm/gamma:0']
     conv2d_0_bn_beta = var_arr_map['FeatureExtractor/MobilenetV1/Conv2d_0/BatchNorm/beta:0']
     conv2d_0_bn_moving_mean = var_arr_map['FeatureExtractor/MobilenetV1/Conv2d_0/BatchNorm/moving_mean:0']
@@ -311,7 +325,7 @@ def initialize_feature_extractor_weights(path_to_dict):
         'FeatureExtractor/MobilenetV1/Conv2d_13_pointwise/BatchNorm/moving_variance:0']
     assign_op, feed_dict_init = slim.assign_from_values({
         # Conv2d_0
-        'Conv2d_0/weights': conv2d_0,
+        'Conv2d_0/weights': new_arr,
         'Conv2d_0/BatchNorm/gamma': conv2d_0_bn_gamma,
         'Conv2d_0/BatchNorm/beta': conv2d_0_bn_beta,
         'Conv2d_0/BatchNorm/moving_mean': conv2d_0_bn_moving_mean,
